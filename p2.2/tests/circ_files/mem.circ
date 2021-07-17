@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project source="2.14.6" version="1.0">
+This file is intended to be loaded by Logisim-evolution (https://github.com/reds-heig/logisim-evolution).
+<lib desc="#Wiring" name="0">
+    <tool name="Splitter">
+      <a name="facing" val="west"/>
+      <a name="incoming" val="32"/>
+      <a name="appear" val="center"/>
+      <a name="bit1" val="0"/>
+      <a name="bit2" val="0"/>
+      <a name="bit3" val="0"/>
+      <a name="bit4" val="0"/>
+      <a name="bit5" val="0"/>
+      <a name="bit6" val="0"/>
+      <a name="bit7" val="0"/>
+      <a name="bit8" val="0"/>
+      <a name="bit9" val="0"/>
+      <a name="bit10" val="0"/>
+      <a name="bit11" val="0"/>
+      <a name="bit12" val="0"/>
+      <a name="bit13" val="0"/>
+      <a name="bit14" val="0"/>
+      <a name="bit15" val="0"/>
+      <a name="bit16" val="1"/>
+      <a name="bit17" val="1"/>
+      <a name="bit18" val="1"/>
+      <a name="bit19" val="1"/>
+      <a name="bit20" val="1"/>
+      <a name="bit21" val="1"/>
+      <a name="bit22" val="1"/>
+      <a name="bit23" val="1"/>
+      <a name="bit24" val="1"/>
+      <a name="bit25" val="1"/>
+      <a name="bit26" val="1"/>
+      <a name="bit27" val="1"/>
+      <a name="bit28" val="1"/>
+      <a name="bit29" val="1"/>
+      <a name="bit30" val="1"/>
+      <a name="bit31" val="1"/>
+    </tool>
+    <tool name="Pin">
+      <a name="facing" val="north"/>
+    </tool>
+    <tool name="Probe">
+      <a name="radix" val="10signed"/>
+    </tool>
+    <tool name="Tunnel">
+      <a name="width" val="32"/>
+    </tool>
+    <tool name="Pull Resistor">
+      <a name="facing" val="north"/>
+    </tool>
+    <tool name="Clock">
+      <a name="facing" val="north"/>
+    </tool>
+    <tool name="Constant">
+      <a name="value" val="0x0"/>
+    </tool>
+  </lib>
+  <lib desc="#Gates" name="1"/>
+  <lib desc="#Plexers" name="2">
+    <tool name="Multiplexer">
+      <a name="enable" val="false"/>
+    </tool>
+    <tool name="Demultiplexer">
+      <a name="enable" val="false"/>
+    </tool>
+  </lib>
+  <lib desc="#Arithmetic" name="3"/>
+  <lib desc="#Memory" name="4">
+    <tool name="RAM">
+      <a name="addrWidth" val="24"/>
+      <a name="dataWidth" val="32"/>
+    </tool>
+    <tool name="ROM">
+      <a name="contents">addr/data: 8 8
+0
+</a>
+    </tool>
+  </lib>
+  <lib desc="#I/O" name="5"/>
+  <lib desc="#Base" name="6">
+    <tool name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+  </lib>
+  <main name="main"/>
+  <options>
+    <a name="gateUndefined" val="ignore"/>
+    <a name="simlimit" val="1000"/>
+    <a name="simrand" val="0"/>
+    <a name="tickmain" val="half_period"/>
+  </options>
+  <mappings>
+    <tool lib="6" map="Button2" name="Menu Tool"/>
+    <tool lib="6" map="Button3" name="Menu Tool"/>
+    <tool lib="6" map="Ctrl Button1" name="Menu Tool"/>
+  </mappings>
+  <toolbar>
+    <tool lib="6" name="Poke Tool"/>
+    <tool lib="6" name="Edit Tool"/>
+    <tool lib="6" name="Text Tool">
+      <a name="text" val=""/>
+      <a name="font" val="SansSerif plain 12"/>
+      <a name="halign" val="center"/>
+      <a name="valign" val="base"/>
+    </tool>
+    <sep/>
+    <tool lib="0" name="Pin"/>
+    <tool lib="0" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="labelloc" val="east"/>
+    </tool>
+    <tool lib="1" name="NOT Gate"/>
+    <tool lib="1" name="AND Gate"/>
+    <tool lib="1" name="OR Gate"/>
+  </toolbar>
+  <circuit name="main">
+    <a name="circuit" val="main"/>
+    <a name="clabel" val=""/>
+    <a name="clabelup" val="east"/>
+    <a name="clabelfont" val="SansSerif plain 12"/>
+    <a name="circuitnamedbox" val="false"/>
+    <a name="circuitvhdlpath" val=""/>
+    <appear>
+      <rect fill="none" height="127" stroke="#000000" stroke-width="2" width="182" x="400" y="325"/>
+      <text font-family="SansSerif" font-size="26" text-anchor="middle" x="532" y="413">RAM</text>
+      <text font-family="SansSerif" font-size="12" text-anchor="middle" x="416" y="433">clk</text>
+      <text font-family="SansSerif" font-size="12" text-anchor="middle" x="432" y="405">MemRW</text>
+      <text font-family="SansSerif" font-size="12" text-anchor="middle" x="436" y="374">WriteData</text>
+      <text font-family="SansSerif" font-size="12" text-anchor="middle" x="439" y="344">WriteAddr</text>
+      <text font-family="SansSerif" font-size="12" text-anchor="middle" x="541" y="355">ReadData</text>
+      <circ-port height="8" pin="570,360" width="8" x="386" y="426"/>
+      <circ-port height="8" pin="570,300" width="8" x="386" y="366"/>
+      <circ-port height="8" pin="580,210" width="8" x="386" y="336"/>
+      <circ-port height="10" pin="980,360" width="10" x="585" y="345"/>
+      <circ-port height="8" pin="580,430" width="8" x="386" y="396"/>
+      <circ-anchor facing="east" height="6" width="6" x="577" y="347"/>
+    </appear>
+    <wire from="(710,270)" to="(710,280)"/>
+    <wire from="(660,270)" to="(710,270)"/>
+    <wire from="(680,360)" to="(710,360)"/>
+    <wire from="(580,210)" to="(610,210)"/>
+    <wire from="(610,270)" to="(640,270)"/>
+    <wire from="(950,360)" to="(980,360)"/>
+    <wire from="(680,360)" to="(680,430)"/>
+    <wire from="(580,430)" to="(680,430)"/>
+    <wire from="(610,210)" to="(610,270)"/>
+    <wire from="(580,320)" to="(710,320)"/>
+    <wire from="(580,340)" to="(710,340)"/>
+    <wire from="(570,330)" to="(710,330)"/>
+    <wire from="(580,340)" to="(580,360)"/>
+    <wire from="(580,300)" to="(580,320)"/>
+    <wire from="(570,360)" to="(580,360)"/>
+    <wire from="(570,300)" to="(580,300)"/>
+    <comp lib="4" loc="(710,270)" name="RAM">
+      <a name="addrWidth" val="14"/>
+      <a name="dataWidth" val="32"/>
+      <a name="trigger" val="falling"/>
+      <a name="databus" val="bibus"/>
+      <a name="label" val="DMEM"/>
+      <a name="labelvisible" val="true"/>
+    </comp>
+    <comp lib="0" loc="(570,330)" name="Constant"/>
+    <comp lib="0" loc="(570,360)" name="Pin">
+      <a name="label" val="clock"/>
+    </comp>
+    <comp lib="0" loc="(570,300)" name="Pin">
+      <a name="label" val="Write_enable"/>
+    </comp>
+    <comp lib="0" loc="(580,210)" name="Pin">
+      <a name="width" val="32"/>
+      <a name="label" val="Addr"/>
+    </comp>
+    <comp lib="0" loc="(980,360)" name="Pin">
+      <a name="facing" val="west"/>
+      <a name="output" val="true"/>
+      <a name="width" val="32"/>
+      <a name="label" val="Read"/>
+    </comp>
+    <comp lib="0" loc="(580,430)" name="Pin">
+      <a name="width" val="32"/>
+      <a name="label" val="Write"/>
+    </comp>
+    <comp lib="0" loc="(640,270)" name="Splitter">
+      <a name="fanout" val="1"/>
+      <a name="incoming" val="32"/>
+      <a name="appear" val="center"/>
+      <a name="bit1" val="0"/>
+      <a name="bit2" val="0"/>
+      <a name="bit3" val="0"/>
+      <a name="bit4" val="0"/>
+      <a name="bit5" val="0"/>
+      <a name="bit6" val="0"/>
+      <a name="bit7" val="0"/>
+      <a name="bit8" val="0"/>
+      <a name="bit9" val="0"/>
+      <a name="bit10" val="0"/>
+      <a name="bit11" val="0"/>
+      <a name="bit12" val="0"/>
+      <a name="bit13" val="0"/>
+      <a name="bit14" val="none"/>
+      <a name="bit15" val="none"/>
+      <a name="bit16" val="none"/>
+      <a name="bit17" val="none"/>
+      <a name="bit18" val="none"/>
+      <a name="bit19" val="none"/>
+      <a name="bit20" val="none"/>
+      <a name="bit21" val="none"/>
+      <a name="bit22" val="none"/>
+      <a name="bit23" val="none"/>
+      <a name="bit24" val="none"/>
+      <a name="bit25" val="none"/>
+      <a name="bit26" val="none"/>
+      <a name="bit27" val="none"/>
+      <a name="bit28" val="none"/>
+      <a name="bit29" val="none"/>
+      <a name="bit30" val="none"/>
+      <a name="bit31" val="none"/>
+    </comp>
+  </circuit>
+</project>

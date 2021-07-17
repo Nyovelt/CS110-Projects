@@ -1,0 +1,2 @@
+$port = [System.IO.Ports.SerialPort]::new("COM4", 9600);
+$port.Open(); while($true){$s = $port.ReadLine(); Write-Host $s; if($s[0] -eq 'M'){ Write-Host "Play Music" -ForegroundColor Green; explorer.exe "C:\Users\Nyove\Downloads\874602 R3 Music Box - Zankoku na Tenshi no These\audio.mp3"; }}

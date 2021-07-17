@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "blockchain.h": "c",
+        "hash_function.h": "c",
+        "sha256.h": "c",
+        "immintrin.h": "c"
+    }
+}

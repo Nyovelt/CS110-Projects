@@ -1,0 +1,1 @@
+gcc -c -Wpedantic -Wall -Wextra -Werror -std=c99  doubll2d.c -o doubll2d.o

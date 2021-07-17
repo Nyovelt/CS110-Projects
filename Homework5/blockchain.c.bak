@@ -1,0 +1,143 @@
+/*********************************************************************
+Homework 5
+CS 110: Computer Architecture, Spring 2021
+ShanghaiTech University
+
+* Last Modified: 03/28/2021
+*********************************************************************/
+
+#include "blockchain.h"
+#include <assert.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#define THREAD 2
+
+int success = 0;
+
+void blockchain_node_init(blk_t *node, uint32_t index, uint32_t timestamp, unsigned char prev_hash[32], unsigned char *data,
+                          size_t data_size) {
+    if (!node || !data || !prev_hash)
+        return;
+
+    node->header.index = index;
+    node->header.timestamp = timestamp;
+    node->header.nonce = -1;
+
+    memset(node->header.data, 0, sizeof(unsigned char) * 256);
+    memcpy(node->header.prev_hash, prev_hash, HASH_BLOCK_SIZE);
+    memcpy(node->header.data, data, sizeof(unsigned char) * ((data_size < 256) ? data_size : 256));
+}
+
+void blockchain_node_hash(blk_t *node, unsigned char hash_buf[HASH_BLOCK_SIZE], hash_func func) {
+    if (node)
+        func((unsigned char *)node, sizeof(blkh_t), (unsigned char *)hash_buf);
+    
+}
+
+BOOL blockchain_node_verify(blk_t *node, blk_t *prev_node, hash_func func) {
+    unsigned char hash_buf[HASH_BLOCK_SIZE];
+
+    if (!node || !prev_node)
+        return False;
+
+    blockchain_node_hash(node, hash_buf, func);
+    if (memcmp(node->hash, hash_buf, sizeof(unsigned char) * HASH_BLOCK_SIZE))
+        return False;
+
+    blockchain_node_hash(prev_node, hash_buf, func);
+    if (memcmp(node->header.prev_hash, hash_buf, sizeof(unsigned char) * HASH_BLOCK_SIZE))
+        return False;
+
+    return True;
+}
+
+typedef struct _blk_nod_hash {
+    blk_t *node;
+    unsigned char hash_buf[HASH_BLOCK_SIZE];
+    hash_func *func;
+    unsigned char one_diff[HASH_BLOCK_SIZE];
+    size_t diff_q;
+    blk_t *real_node;
+} blk_nod_hash;
+
+void *ith_hlk_nod_hash(void *arg) {
+
+    blk_nod_hash *p_arg = (blk_nod_hash *)arg;
+    while (True & !success) {
+        blockchain_node_hash(p_arg->node, p_arg->hash_buf, p_arg->func);
+        if ((!memcmp(p_arg->hash_buf, p_arg->one_diff, sizeof(unsigned char) * p_arg->diff_q)) &&
+            memcmp(&p_arg->hash_buf[p_arg->diff_q], &p_arg->one_diff[p_arg->diff_q],
+                   sizeof(unsigned char) * (HASH_BLOCK_SIZE - p_arg->diff_q)) <= 0) {
+            //memcpy(p_arg->node->hash, p_arg->hash_buf, sizeof(unsigned char) * HASH_BLOCK_SIZE);  
+            p_arg->real_node->header.nonce = p_arg->node->header.nonce;
+            //memcpy(p_arg->real_node->hash, p_arg->node->hash, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+            memcpy(p_arg->real_node->hash, p_arg->hash_buf, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+            success  = 1;
+            break;
+        }
+        p_arg->node->header.nonce+=THREAD;
+    }
+    // p_arg->real_node->header.nonce = p_arg->node->header.nonce;
+    // memcpy(p_arg->real_node->hash, p_arg->node->hash, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+    return NULL;
+}
+
+/* The sequiental implementation of mining implemented for you. */
+void blockchain_node_mine(blk_t *node, unsigned char hash_buf[HASH_BLOCK_SIZE], size_t diff, hash_func func) {
+    pthread_t p1, p2;
+    blk_nod_hash thread_args1, thread_args2;
+    blk_t blk_node_1,blk_node_2;
+    unsigned char one_diff[HASH_BLOCK_SIZE];
+    size_t diff_q, diff_m;
+    diff_q = diff / 8;
+    diff_m = diff % 8;
+    memset(one_diff, 0xFF, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+    memset(one_diff, 0, sizeof(unsigned char) * diff_q);
+    one_diff[diff_q] = ((uint8_t)0xFF) >> diff_m;
+
+    // copy first node
+    blk_node_1.header.index = node->header.index;
+    blk_node_1.header.timestamp = node->header.timestamp;
+    blk_node_1.header.nonce = node->header.nonce;
+    memcpy(blk_node_1.hash, node->hash, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+    memset(blk_node_1.header.data, 0,sizeof(unsigned char) * 256);
+    memcpy(blk_node_1.header.prev_hash, node->header.prev_hash, HASH_BLOCK_SIZE);
+    memcpy(blk_node_1.header.data, node->header.data, sizeof(unsigned char) * 256);
+    // prepare first thread
+    thread_args1.node = &blk_node_1;
+    thread_args1.func = func;
+    thread_args1.diff_q = diff_q;
+    thread_args1.real_node = node;
+
+    // run first node
+    memcpy(thread_args1.one_diff, one_diff, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+    pthread_create(&p1, NULL, ith_hlk_nod_hash, (void*)&thread_args1);
+    
+    
+    // copy second node
+    blk_node_2.header.index = node->header.index;
+    blk_node_2.header.timestamp = node->header.timestamp;
+    blk_node_2.header.nonce = node->header.nonce + 1;
+    memcpy(blk_node_2.hash, node->hash, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+    memset(blk_node_2.header.data, 0,sizeof(unsigned char) * 256);
+    memcpy(blk_node_2.header.prev_hash, node->header.prev_hash, HASH_BLOCK_SIZE);
+    memcpy(blk_node_2.header.data, node->header.data, sizeof(unsigned char) * 256);
+    // prepare second thread
+    thread_args2.node = &blk_node_2;
+    thread_args2.func = func;
+    thread_args2.diff_q = diff_q;
+    thread_args2.real_node = node;
+
+    // run second node
+    memcpy(thread_args2.one_diff, one_diff, sizeof(unsigned char) * HASH_BLOCK_SIZE);
+    pthread_create(&p2, NULL, ith_hlk_nod_hash, (void*)&thread_args2);
+    
+    
+    
+    
+    pthread_join(p1, NULL);
+    pthread_join(p2, NULL);
+}

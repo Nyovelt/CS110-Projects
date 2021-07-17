@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)https://robotics.shanghaitech.edu.cn/courses/ca/21s/labs/3/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Lab 3 - Computer Architecture I - ShanghaiTech University</title>
+<link rel="shortcut icon" type="image/png" href="https://robotics.shanghaitech.edu.cn/courses/ca/21s/favicon.ico">
+
+<style type="text/css">
+code {background-color: #ddeeff; color: #000000;}
+kbd {background-color: #ddeeff; color: #000000;}
+.new {background-color: #ffff00; color: #000000;}
+
+div.checkoff {
+  background:#eeeee0;
+  padding:0.5em 1.5em 0.5em 1.5em;
+  border-radius:1em;
+  border:1px solid #ddd;
+}
+
+
+</style>
+<link rel="stylesheet" type="text/css" href="./Lab 3 - Computer Architecture I - ShanghaiTech University_files/style.css">
+
+</head>
+<body data-new-gr-c-s-check-loaded="14.981.0" data-gr-ext-installed="">
+<header>
+<h2>Lab 3</h2>
+</header>
+<a href="https://robotics.shanghaitech.edu.cn/courses/ca/21s/">Computer Architecture I</a> <a href="http://www.shanghaitech.edu.cn/">ShanghaiTech University</a><br>
+<a href="https://robotics.shanghaitech.edu.cn/courses/ca/21s/labs/2">Lab 2</a> Lab 3 <!--a href="../4">Lab 4</a-->
+
+
+<div class="content">
+
+<h2>Objectives</h2>
+<ul>
+  <li>Run and debug RISC-V assembly code.</li>
+  <li>Write RISC-V functions using the right calling procedure.</li>
+  <li>Get an idea of how to translate C code to RISC-V</li>
+</ul>
+
+<h2 id="intro-to-assembly-with-risc-v-simulator">Intro to Assembly with RISC-V Simulator</h2>
+<p>So far, we have been dealing with C program files (.c file extension), and have been using the <tt>gcc</tt> compiler to execute these higher-level language programs. Now, we are learning about the RISC-V assembly language, which is a lower-level language much closer to machine code. For context, <tt>gcc</tt> takes the C code we write, first compiles this down to assembly code (gcc uses a more complex assembly language than RISC-V), and then assembles this down to machine code/binary.</p>
+
+<p>In this lab, we will deal with several RISC-V assembly program files, each of which have a .s file extension. To run these, we will need to use a RISC-V simulator. The simulator we will use was developed by <a href="https://github.com/kvakil">Keyhan Vakil</a> and improved by <a href="https://github.com/ThaumicMekanism">Stephan Kaminsky</a>. The simulator is called <strong>Venus</strong> and can be found online <a href="https://venus.cs61c.org/">here</a>. We have deployed Venus on our Autolab server (<a href="https://autolab.sist.shanghaitech.edu.cn/venus/">link</a>).</p>
+
+<h3 id="assemblyvenus-basics">Assembly/Venus Basics</h3>
+<ul>
+  <li>Enter your RISC-V code in the “Editor” tab</li>
+  <li>Programs start at the first line regardless of the label. That means that the <tt>main</tt> function must be put first.</li>
+  <li>Programs end with an <tt>ecall</tt> with argument value 10. This signals for the program to exit. The ecall instructions are analogous to <a href="https://en.wikipedia.org/wiki/System_call">System Calls</a> and allow us to do things such as print to the console or request chunks of memory from the heap.</li>
+  <li>Labels end with a colon (<tt>:</tt>).</li>
+  <li>Comments start with a pound sign (<tt>#</tt>).</li>
+  <li>You CANNOT put more than one instruction per line.</li>
+  <li>When you are done editing, click the “Simulator” tab to prepare for execution.</li>
+</ul>
+
+<p><strong>For the following exercises, please save your completed code in a file on your local machine. This is crucial for the checkoff portion to work.</strong></p>
+
+<h2 id="exercise-1-familiarizing-yourself-with-venus">Exercise 1: Familiarizing yourself with Venus</h2>
+<p>Getting started:</p>
+<ol>
+  <li>Paste the contents of <a href="https://robotics.shanghaitech.edu.cn/courses/ca/19s/labs/3/lab2_ex1.s" download="">lab2_ex1.s</a> into the editor.</li>
+  <li>Click the “Simulator” tab. This will prepare the code you wrote for execution.</li>
+  <li>In the simulator, click “Assemble &amp; Simulate from Editor”</li>
+  <li>In the simulator, to execute the next instruction, click the “step” button.</li>
+  <li>To undo an instruction, click the “prev” button.</li>
+  <li>To run the program to completion, click the “run” button.</li>
+  <li>To reset the program from the start, click the “reset” button.</li>
+  <li>The contents of all 32 registers are on the right-hand side, and the console output is at the bottom</li>
+  <li>To view the contents of memory, click the “Memory” tab on the right. You can navigate to different portions of your memory using the dropdown menu at the bottom.</li>
+</ol>
+
+<h3 id="action-item">Action Item</h3>
+<p>Record your answers to the following questions in a text file. Some of the questions will require you to run the RISC-V code using Venus’ simulator tab.</p>
+
+<ol>
+  <li>What do the <tt>.data</tt>, <tt>.word</tt>, <tt>.text</tt> directives mean (i.e. what do you use them for)? <strong>Hint</strong>: think about the 4 sections of memory.</li>
+  <li>Run the program to completion. What number did the program output? What does this number represent?</li>
+  <li>At what address is <tt>n</tt> stored in memory? <strong>Hint</strong>: Look at the contents of the registers.</li>
+  <li>Without using the “Edit” tab, have the program calculate the 13th fib number (0-indexed) by <em>manually</em> modifying the value of a register. You may find it helpful to first step through the code. If you prefer to look at decimal values, change the “Display Settings” option at the bottom.</li>
+</ol>
+
+<h4>Check-off</h4>
+<div class="checkoff">
+Show your TA that you are able to run through the above steps and provide answers to the questions.
+</div>
+
+
+<h2 id="exercise-2-translating-from-c-to-risc-v">Exercise 2: Translating from C to RISC-V</h2>
+<p>Open the files <a href="https://robotics.shanghaitech.edu.cn/courses/ca/19s/labs/3/lab2_ex2_c.c" download="">lab2_ex2_c.c</a> and <a href="https://robotics.shanghaitech.edu.cn/courses/ca/19s/labs/3/lab2_ex2_assembly.s" download="">lab2_ex2_assembly.s</a>. The assembly code provided (.s file) is a translation of the given C program into RISC-V.</p>
+
+<h3 id="action-item-1">Action Item</h3>
+<p>Find/explain the following components of the assembly file and put your answers in a text file.</p>
+<ul>
+  <li>The register representing the variable <tt>k</tt>.</li>
+  <li>The registers acting as pointers to the <tt>source</tt> and <tt>dest</tt> arrays.</li>
+  <li>The assembly code for the loop found in the C code.</li>
+  <li>How the pointers are manipulated in the assembly code.</li>
+</ul>
+
+<p>After you’ve answered explained the above components, edit <tt>lab2_ex2_assembly.s</tt> so that it <tt>dest</tt> satisfies the following conditions.</p>
+<ul>
+  <li><tt>dest[i] = 2 * source[i]</tt> for even <tt>i</tt></li>
+  <li><tt>dest[i] = 1</tt> for odd <tt>i</tt></li>
+</ul>
+
+<p><strong>Hint</strong>: This can be done by adding one line of code and modifying another (in other words, you only need to make 2 changes). Look at the initial values of dest; how does this help you implement this modification?</p>
+
+<p>Verify that your changes work for the given <tt>source</tt> and <tt>dest</tt> arrays by running your code in a new Venus tab and check that the output looks like:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><tt>3 1 4 1 5 9
+6 1 8 1 10 1
+</tt></pre></div></div>
+
+<h4>Check-off</h4>
+<div class="checkoff">
+	Show <tt>lab2_ex2_assembly.s</tt> to your TA, and run it in Venus, which should give the correct result.
+</div>
+
+<h2 id="exercise-3-factorial">Exercise 3: Factorial</h2>
+<p>In this exercise, you will be implementing a function <tt>factorial</tt> in RISC-V that has a single integer parameter <tt>n</tt> and returns <tt>n!</tt>. A stub of this function can be found in the file <a href="https://robotics.shanghaitech.edu.cn/courses/ca/19s/labs/3/factorial.s" download="">factorial.s</a>. You will only need to add instructions under the <tt>factorial</tt> label, and the arguments that are passed into the function are defined at the top of the file. You may solve this problem using either recursion or iteration.</p>
+
+<h3 id="action-item-2">Action Item</h3>
+<p>Implement <tt>factorial</tt> and make sure that the program correctly outputs <tt>3!</tt>, <tt>6!</tt>, <tt>7!</tt>, and <tt>8!</tt>. In other words, the output should be</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><tt>6 720 5040 40320
+</tt></pre></div></div>
+
+<h4>Check-off</h4>
+<div class="checkoff">
+	Show <tt>factorial.s</tt> to your TA, and run it in Venus, which should give the correct result.
+</div>
+
+</div>
+
+
+
+<footer>
+<hr style="clear: both;">
+<div style="float:left">
+<address>
+Schwertfeger, Sören &lt;<code>soerensch</code> AT <code>shanghaitech.edu.cn</code>&gt;
+</address>
+<address>
+Chundong Wang &lt;<code>wangchd</code> AT <code>shanghaitech.edu.cn</code>&gt;
+</address>
+Modeled after UC Berkeley's CS61C.<br>
+Last modified: 2021-03-10
+</div>
+
+</footer>
+
+
+</body></html>
